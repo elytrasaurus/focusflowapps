@@ -1,0 +1,14 @@
+{
+    "PomodoroApp": {
+        "title": "Pomodoro Productivity Suite",
+        "desc": "Integrated deep work interval timer featuring structural JSON execution tracking logs with granular history rollback edits."
+    },
+    "TodoApp": {
+        "title": "Task Matrix Board",
+        "desc": "Organize immediate objectives, sort focus targets, and clean up completed daily action items via localized data states."
+    },
+    "NotesApp": {
+        "title": "Quick Scratchpad Cache",
+        "desc": "Distraction-free rich text editor capturing real-time clipboard snapshots and auto-saving live text blocks down to storage."
+    }
+}
