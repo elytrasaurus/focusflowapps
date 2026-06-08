@@ -1,3 +1,5 @@
+import os
+import json
 import customtkinter as ctk
 
 class AppFrame(ctk.CTkFrame):
@@ -11,8 +13,12 @@ class AppFrame(ctk.CTkFrame):
         self.default_time = 1500
         self.time_left = self.default_time
 
+        self.current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.json_path = os.path.join(self.current_dir, "history.json")
+
         self.create_header()
         self.create_content()
+        self.load_history_from_json()
 
     def create_header(self):
         header_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -89,7 +95,7 @@ class AppFrame(ctk.CTkFrame):
                 self.action_btn.configure(text="Start Session", fg_color="#0078d4")
                 self.time_left = self.default_time
                 self.time_display.configure(text="25:00")
-                self.add_completed_session_log()
+                self.append_log_to_json("⏱️ Focus session completed!", is_system=True)
 
     def reset_timer(self):
         self.timer_running = False
@@ -100,18 +106,47 @@ class AppFrame(ctk.CTkFrame):
     def add_log_item(self):
         text = self.log_entry.get().strip()
         if text:
-            item_frame = ctk.CTkFrame(self.log_box, fg_color="#2d2d2d", corner_radius=6, height=34)
-            item_frame.pack(fill="x", pady=4, padx=5)
-            item_frame.pack_propagate(False)
-            
-            lbl = ctk.CTkLabel(item_frame, text=f"• {text}", font=ctk.CTkFont(family="Segoe UI", size=13), text_color="#ffffff")
-            lbl.pack(side="left", padx=10)
+            self.append_log_to_json(text, is_system=False)
             self.log_entry.delete(0, "end")
 
-    def add_completed_session_log(self):
-        item_frame = ctk.CTkFrame(self.log_box, fg_color="#143622", corner_radius=6, height=34)
+    def render_log_element(self, text, is_system=False):
+        bg = "#143622" if is_system else "#2d2d2d"
+        fg = "#00CA4E" if is_system else "#ffffff"
+        weight = "bold" if is_system else "normal"
+        prefix = "" if is_system else "• "
+
+        item_frame = ctk.CTkFrame(self.log_box, fg_color=bg, corner_radius=6, height=34)
         item_frame.pack(fill="x", pady=4, padx=5)
         item_frame.pack_propagate(False)
         
-        lbl = ctk.CTkLabel(item_frame, text="⏱️ Focus session completed!", font=ctk.CTkFont(family="Segoe UI", size=13, weight="bold"), text_color="#00CA4E")
+        lbl = ctk.CTkLabel(item_frame, text=f"{prefix}{text}", font=ctk.CTkFont(family="Segoe UI", size=13, weight=weight), text_color=fg)
         lbl.pack(side="left", padx=10)
+
+    def load_history_from_json(self):
+        if os.path.exists(self.json_path):
+            try:
+                with open(self.json_path, "r") as f:
+                    logs = json.load(f)
+                    for log in logs:
+                        self.render_log_element(log["text"], log["is_system"])
+            except:
+                pass
+
+    def append_log_to_json(self, text, is_system=False):
+        logs = []
+        if os.path.exists(self.json_path):
+            try:
+                with open(self.json_path, "r") as f:
+                    logs = json.load(f)
+            except:
+                logs = []
+
+        logs.append({"text": text, "is_system": is_system})
+
+        try:
+            with open(self.json_path, "w") as f:
+                json.dump(logs, f, indent=4)
+        except:
+            pass
+
+        self.render_log_element(text, is_system)
