@@ -4,7 +4,7 @@ import customtkinter as ctk
 
 class AppFrame(ctk.CTkFrame):
     def __init__(self, parent):
-        super().__init__(parent, fg_color="#1e1e1e", corner_radius=12)
+        super().__init__(parent, fg_color="#1a1a1a", corner_radius=12)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
@@ -15,6 +15,7 @@ class AppFrame(ctk.CTkFrame):
 
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
         self.json_path = os.path.join(self.current_dir, "history.json")
+        self.log_widgets = []
 
         self.create_header()
         self.create_content()
@@ -27,7 +28,7 @@ class AppFrame(ctk.CTkFrame):
         title = ctk.CTkLabel(header_frame, text="Focus Timer", font=ctk.CTkFont(family="Segoe UI", size=24, weight="bold"), text_color="#ffffff")
         title.grid(row=0, column=0, sticky="w")
 
-        subtitle = ctk.CTkLabel(header_frame, text="Deep work session & activity logging", font=ctk.CTkFont(family="Segoe UI", size=12), text_color="#858585")
+        subtitle = ctk.CTkLabel(header_frame, text="Deep work interval tracker and modular records utility", font=ctk.CTkFont(family="Segoe UI", size=12), text_color="#8c8c8c")
         subtitle.grid(row=1, column=0, sticky="w")
 
     def create_content(self):
@@ -37,41 +38,41 @@ class AppFrame(ctk.CTkFrame):
         content_frame.grid_columnconfigure(1, weight=5)
         content_frame.grid_rowconfigure(0, weight=1)
 
-        timer_card = ctk.CTkFrame(content_frame, fg_color="#2d2d2d", corner_radius=12)
+        timer_card = ctk.CTkFrame(content_frame, fg_color="#242424", corner_radius=12)
         timer_card.grid(row=0, column=0, padx=(0, 15), sticky="nsew")
         timer_card.grid_columnconfigure(0, weight=1)
 
         self.time_display = ctk.CTkLabel(timer_card, text="25:00", font=ctk.CTkFont(family="Segoe UI", size=54, weight="bold"), text_color="#60CDFF")
-        self.time_display.grid(row=0, column=0, pady=(50, 20))
+        self.time_display.grid(row=0, column=0, pady=(55, 25))
 
         btn_frame = ctk.CTkFrame(timer_card, fg_color="transparent")
-        btn_frame.grid(row=1, column=0, pady=(0, 40))
+        btn_frame.grid(row=1, column=0, pady=(0, 45))
 
-        self.action_btn = ctk.CTkButton(btn_frame, text="Start Session", fg_color="#0078d4", hover_color="#106ebe", font=ctk.CTkFont(family="Segoe UI", size=13, weight="bold"), width=110, height=36, command=self.toggle_timer)
+        self.action_btn = ctk.CTkButton(btn_frame, text="Start Session", fg_color="#0078d4", hover_color="#106ebe", font=ctk.CTkFont(family="Segoe UI", size=13, weight="bold"), width=115, height=38, corner_radius=6, command=self.toggle_timer)
         self.action_btn.grid(row=0, column=0, padx=5)
 
-        reset_btn = ctk.CTkButton(btn_frame, text="Reset", fg_color="#3a3a3a", hover_color="#4a4a4a", text_color="#ffffff", font=ctk.CTkFont(family="Segoe UI", size=13), width=80, height=36, command=self.reset_timer)
+        reset_btn = ctk.CTkButton(btn_frame, text="Reset", fg_color="#333333", hover_color="#444444", text_color="#ffffff", font=ctk.CTkFont(family="Segoe UI", size=13), width=85, height=38, corner_radius=6, command=self.reset_timer)
         reset_btn.grid(row=0, column=1, padx=5)
 
-        log_card = ctk.CTkFrame(content_frame, fg_color="#2d2d2d", corner_radius=12)
+        log_card = ctk.CTkFrame(content_frame, fg_color="#242424", corner_radius=12)
         log_card.grid(row=0, column=1, padx=(15, 0), sticky="nsew")
         log_card.grid_columnconfigure(0, weight=1)
         log_card.grid_rowconfigure(2, weight=1)
 
         log_title = ctk.CTkLabel(log_card, text="Activity Log", font=ctk.CTkFont(family="Segoe UI", size=16, weight="bold"), text_color="#ffffff")
-        log_title.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="w")
+        log_title.grid(row=0, column=0, padx=20, pady=(20, 12), sticky="w")
 
         input_frame = ctk.CTkFrame(log_card, fg_color="transparent")
         input_frame.grid(row=1, column=0, padx=20, pady=(0, 15), sticky="ew")
         input_frame.grid_columnconfigure(0, weight=1)
 
-        self.log_entry = ctk.CTkEntry(input_frame, placeholder_text="What are you working on?", fg_color="#1e1e1e", border_width=1, border_color="#3a3a3a", height=36)
+        self.log_entry = ctk.CTkEntry(input_frame, placeholder_text="What are you working on?", fg_color="#1a1a1a", border_width=1, border_color="#333333", height=38, corner_radius=6)
         self.log_entry.grid(row=0, column=0, padx=(0, 10), sticky="ew")
 
-        add_btn = ctk.CTkButton(input_frame, text="Log", fg_color="#00CA4E", hover_color="#00b545", text_color="#ffffff", font=ctk.CTkFont(family="Segoe UI", size=13, weight="bold"), width=60, height=36, command=self.add_log_item)
+        add_btn = ctk.CTkButton(input_frame, text="Log Item", fg_color="#00CA4E", hover_color="#00b545", text_color="#ffffff", font=ctk.CTkFont(family="Segoe UI", size=13, weight="bold"), width=80, height=38, corner_radius=6, command=self.add_log_item)
         add_btn.grid(row=0, column=1)
 
-        self.log_box = ctk.CTkScrollableFrame(log_card, fg_color="#1e1e1e", corner_radius=8)
+        self.log_box = ctk.CTkScrollableFrame(log_card, fg_color="#1a1a1a", corner_radius=8)
         self.log_box.grid(row=2, column=0, padx=20, pady=(0, 20), sticky="nsew")
 
     def toggle_timer(self):
@@ -109,26 +110,32 @@ class AppFrame(ctk.CTkFrame):
             self.append_log_to_json(text, is_system=False)
             self.log_entry.delete(0, "end")
 
-    def render_log_element(self, text, is_system=False):
-        bg = "#143622" if is_system else "#2d2d2d"
+    def render_log_element(self, text, is_system, index):
+        bg = "#143622" if is_system else "#333333"
         fg = "#00CA4E" if is_system else "#ffffff"
         weight = "bold" if is_system else "normal"
         prefix = "" if is_system else "• "
 
-        item_frame = ctk.CTkFrame(self.log_box, fg_color=bg, corner_radius=6, height=34)
+        item_frame = ctk.CTkFrame(self.log_box, fg_color=bg, corner_radius=6, height=36)
         item_frame.pack(fill="x", pady=4, padx=5)
         item_frame.pack_propagate(False)
         
         lbl = ctk.CTkLabel(item_frame, text=f"{prefix}{text}", font=ctk.CTkFont(family="Segoe UI", size=13, weight=weight), text_color=fg)
-        lbl.pack(side="left", padx=10)
+        lbl.pack(side="left", padx=12)
+
+        del_btn = ctk.CTkButton(item_frame, text="×", font=ctk.CTkFont(size=16, weight="bold"), text_color="#FF5F5F", fg_color="transparent", hover_color="#444444" if not is_system else "#1e462b", width=24, height=24, corner_radius=4, command=lambda: self.unlog_item(index))
+        del_btn.pack(side="right", padx=6)
+
+        self.log_widgets.append(item_frame)
 
     def load_history_from_json(self):
+        self.clear_rendered_widgets()
         if os.path.exists(self.json_path):
             try:
                 with open(self.json_path, "r") as f:
                     logs = json.load(f)
-                    for log in logs:
-                        self.render_log_element(log["text"], log["is_system"])
+                    for i, log in enumerate(logs):
+                        self.render_log_element(log["text"], log["is_system"], i)
             except:
                 pass
 
@@ -149,4 +156,25 @@ class AppFrame(ctk.CTkFrame):
         except:
             pass
 
-        self.render_log_element(text, is_system)
+        self.load_history_from_json()
+
+    def unlog_item(self, target_index):
+        if os.path.exists(self.json_path):
+            try:
+                with open(self.json_path, "r") as f:
+                    logs = json.load(f)
+                
+                if 0 <= target_index < len(logs):
+                    logs.pop(target_index)
+                
+                with open(self.json_path, "w") as f:
+                    json.dump(logs, f, indent=4)
+            except:
+                pass
+        
+        self.load_history_from_json()
+
+    def clear_rendered_widgets(self):
+        for widget in self.log_widgets:
+            widget.destroy()
+        self.log_widgets = []
